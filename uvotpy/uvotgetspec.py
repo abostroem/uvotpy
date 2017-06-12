@@ -1168,7 +1168,7 @@ def getSpec(RA,DEC,obsid, ext, indir='./', wr_outfile=True,
          net[net<0.] = 1e-16
          plt.imshow(np.log10(net),vmin=-0.8,vmax=0.8,
                     extent=(ac,ac+extimg.shape[1],0,extimg.shape[0]),
-                    origin='lower',cmap=plt.cm.winter)
+                    origin='lower')
          plt.contour(np.log10(net),levels=[1,1.3,1.7,2.0,3.0],
                     extent=(ac,ac+extimg.shape[1],0,extimg.shape[0]),
                     origin='lower')
