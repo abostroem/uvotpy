@@ -1137,7 +1137,7 @@ def getSpec(RA,DEC,obsid, ext, indir='./', wr_outfile=True,
          bga = bg.copy()
          fig1 = plt.figure(1); plt.clf()
          img[img <=0 ] = 1e-16
-         plt.imshow(np.log(img),vmin=np.log(bga.mean()*0.1),vmax=np.log(bga.mean()*4))
+         plt.imshow(np.log(img),vmin=np.log(bga.mean()*0.1),vmax=np.log(bga.mean()*4), interpolation='nearest')
          levs = np.array([5,15,30,60,120,360]) * bg.mean()
          if highlight: plt.contour(img,levels=levs)
          #  plot yellow wavelength marker 
@@ -1168,7 +1168,7 @@ def getSpec(RA,DEC,obsid, ext, indir='./', wr_outfile=True,
          net[net<0.] = 1e-16
          plt.imshow(np.log10(net),vmin=-0.8,vmax=0.8,
                     extent=(ac,ac+extimg.shape[1],0,extimg.shape[0]),
-                    origin='lower')
+                    origin='lower', interpolation='nearest')
          plt.contour(np.log10(net),levels=[1,1.3,1.7,2.0,3.0],
                     extent=(ac,ac+extimg.shape[1],0,extimg.shape[0]),
                     origin='lower')
