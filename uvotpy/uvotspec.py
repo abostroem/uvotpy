@@ -1395,7 +1395,7 @@ def quality_flags_to_ranges(quality,chatter=0):
           a dictionary of ranges for each flag except 'good'  
        
        """
-       from uvotgetspec import quality_flags
+       from .uvotgetspec import quality_flags
        
        flagdefs = quality_flags()
        flags=list(flagdefs.keys())
@@ -2492,7 +2492,7 @@ def _sum_output_sub4(phafiles,nfiles, outfile,wave_shifts, exclude_wave,
    import os
    import sys
    from astropy.io import fits
-   from uvotmisc import swtime2JD, get_keyword_from_history
+   from .uvotmisc import swtime2JD, get_keyword_from_history
    import datetime
    
    now = datetime.date.today().isoformat()
