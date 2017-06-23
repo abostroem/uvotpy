@@ -447,7 +447,7 @@ http://swift.gsfc.nasa.gov/ '''
       ra_,dec_ = get_radec(objectid=object_name)
       if ra == None:
          print("ERROR: unable to get a position from the object_name. \n       Please supply RA, DEC\n")
-	 raise         
+	  raise         
 
    give_result = False 
    

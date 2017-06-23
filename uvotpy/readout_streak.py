@@ -145,7 +145,7 @@ def readout_streak(obsid,
         rawfiles.append(filename)
      elif os.access(filename+'.gz', os.F_OK):
         if os.system('gunzip '+filename+'.gz'):
-	   rawfiles.append(filename)
+	    rawfiles.append(filename)
    if len(rawfiles) == 0:
       print(" no valid raw files found in the current directory; unzipping any present; try to rerun.")
       return
