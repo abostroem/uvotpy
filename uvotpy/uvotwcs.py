@@ -111,7 +111,7 @@ def makewcshdr(filestub, ext, attfile,
    except:   
       import pyfits as fits
       import pywcs as wcs
-   from uvotgetspec import boresight   
+   from .uvotgetspec import boresight   
    
    msg = ""   
    if chatter > 0:
