@@ -38,9 +38,9 @@
 from __future__ import division
 from __future__ import print_function
 from __future__ import absolute_import
-from builtins import input
-from builtins import range
-from builtins import object
+from future.builtins import input
+from future.builtins import range
+from future.builtins import object
 import sys
 import numpy as np
 import matplotlib.pyplot as plt
@@ -530,7 +530,7 @@ def adjust_wavelength_manually(file=None,openfile=None,openplot=None,
     
     """
     import sys
-    import uvotmisc
+    from . import uvotmisc
     from matplotlib.pyplot import fignum_exists
     # data
     if openfile != None:
