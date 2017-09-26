@@ -42,7 +42,9 @@ from __future__ import absolute_import
 from future.builtins import str
 from future.builtins import input
 from future.builtins import range
-__version__ = '2.8.0 20170517'
+
+__version__ = '2.8.0 20170608'
+
  
 import sys
 import optparse
@@ -3957,7 +3959,7 @@ def x_aperture_correction(k1,k2,sigcoef,x,norder=None, mode='best', coi=None, wh
                  apercf4 = interp1d(aper_1000_low['sig'],aper_1000_low['ape'],)
                  apercorr = renormal / apercf4(xx)                       
       else: 
-       # when xx<4.5, mode !gaussian, wheelpos==None use the following
+       #Â when xx<4.5, mode !gaussian, wheelpos==None use the following
        # 2012-02-21 PSF best fit at 3500 from cal_psf aper05+aper08 valid for 0.5 < xx < 4.5  
        # the function does not rise as steeply so has more prominent wings
         tck = (np.array([ 0. ,  0. ,  0. ,  0. ,  0.2,  0.3,  0.4,  0.5,  0.6,  0.7,  0.8,
@@ -7590,10 +7592,8 @@ def sum_Extimage( pha_file_list, sum_file_name='extracted_image_sum.fit', mode='
    
    Paul Kuin 2011 (MSSL/UCL)
    '''
-   try:
-      from astropy.io import fits as pyfits
-   except:
-      import pyfits
+   
+   from astropy.io import fits 
    import numpy as np
    import uvotmisc
    import pylab as plt
@@ -7619,7 +7619,7 @@ def sum_Extimage( pha_file_list, sum_file_name='extracted_image_sum.fit', mode='
    if mode == 'create':         
       for m in range(len(pha_file_list)):
          pha_file = pha_file_list[m]
-         d = pyfits.getdata(pha_file,2)
+         d = fits.getdata(pha_file,2)
          #print m," - ",pha_file
          if m == 0:
             w1 = d['lambda']
@@ -7652,7 +7652,7 @@ def sum_Extimage( pha_file_list, sum_file_name='extracted_image_sum.fit', mode='
          print("reset shifts ",ysh)
       for m in range(len(pha_file_list)):
          pha_file = pha_file_list[m]
-         f = pyfits.open(pha_file)
+         f = fits.open(pha_file)
          headers.append( f[1].header )
          if chatter > 0 : 
             print('reading '+pha_file+'   in mode='+mode)
@@ -7721,20 +7721,21 @@ def sum_Extimage( pha_file_list, sum_file_name='extracted_image_sum.fit', mode='
          plt.plot( img2[80:120,:].sum(0) )
          plt.grid()
          plt.legend(legend)
-         plt.title('adding image: pixels summed y[80:120] to check alignment')
+         plt.title('adding image: pixels summed y[80:120] to check x-alignment')
          f.close()
         
 #     create file with sum extracted image
          
       hdr = headers[0]          
-      fsum = pyfits.PrimaryHDU(data=img,header=hdr)
-      hdulist = pyfits.HDUList(fsum)
-      hdulist[0].header.update('EXPOSURE',tot_exposure,comment='total exposure time')
-      hdulist[0].header.update('EXTNAME','SPECTRUMSUM')
-      hdulist[0].header.update('EXPID','989979969')
+      fsum = fits.PrimaryHDU(data=img,header=hdr)
+      hdulist = fits.HDUList(fsum)
+      hdr0 = hdulist[0].header
+      hdr0['EXPOSURE'] = (tot_exposure,'total exposure time')
+      hdr0['EXTNAME'] = 'SPECTRUMSUM'
+      hdr0['EXPID'] = ('989979969','completely bogus id')
       
       for head in headers:
-         hist = head.get_history()
+         hist = head['history']
          filetag = head['filetag']
          hdulist[0].header.add_history(" copy header[1] of filetag "+filetag)
          tstart = min([head['tstart'],tstart])
@@ -7743,20 +7744,20 @@ def sum_Extimage( pha_file_list, sum_file_name='extracted_image_sum.fit', mode='
             hdulist[0].header.add_history(h)
       for pha_file in pha_file_list:        
          hdulist[0].header.add_history('added file'+pha_file)
-      hdulist[0].header.update('TSTART',tstart)
-      hdulist[0].header.update('TSTOP',tstop)
-      exthdu = pyfits.ImageHDU(expmap) # add extension for the expmap 
+      hdulist[0].header['TSTART']=tstart
+      hdulist[0].header['TSTOP']=tstop
+      exthdu = fits.ImageHDU(expmap) # add extension for the expmap 
       hdulist.append(exthdu)
-      hdulist[1].header.update('EXTNAME','EXPOSUREMAP')
-      # quahdu = pyfits.ImageHDU( quahdu )
+      hdulist[1].header['EXTNAME']='EXPOSUREMAP'
+      # quahdu = fits.ImageHDU( quahdu )
       # hdulist.append(quahdu)
-      #hdulist[2].header.update('EXTNAME','QUALITYMAP')
+      #hdulist[2].header['EXTNAME']='QUALITYMAP'
       hdulist.writeto(sum_file_name,clobber=clobber)
       hdulist.close()
       print("total exposure of images = ",tot_exposure)
                  
    elif mode == 'read':    #  read the summed, extracted image and header
-         hdulist  = pyfits.open(sum_file_name)
+         hdulist  = fits.open(sum_file_name)
          hdr = hdulist[0].header
          exposure = hdr['exposure']
          wheelpos = hdulist[0].header['wheelpos']
@@ -8700,7 +8701,7 @@ def coi_func(pixno,wave,countrate,bkgrate,
    else: 
        tot_cpf = None   
        
-   bkg_cpf = bkg_countsperframe = bkgrate * frametime   # background was already smoothed
+   bkg_cpf = bkg_countsperframe = bkgrate * frametime   #Â background was already smoothed
    
    if chatter > 3: 
        sys.stderr.write("alpha  = %f\nnumber of data points %i  printing every 25th"%
